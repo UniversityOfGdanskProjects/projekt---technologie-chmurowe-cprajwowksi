@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mymongo-set
+  namespace: keycloak
+spec:
+  serviceName: mymongo-set
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mymongo-set
+  template:
+    metadata:
+      labels:
+        app: mymongo-set
+    spec:
+      containers:
+      - name: mymongo-set
+        image: cprajwowski/mymongo
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secrets
+              key: MONGO_INITDB_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secrets
+              key: MONGO_INITDB_ROOT_PASSWORD
+        ports:
+        - containerPort: 27017
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: mongo-data
+          mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mymongo-set
+  namespace: keycloak
+spec:
+  selector:
+    app: mymongo-set
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+  type: ClusterIP

@@ -26,6 +26,8 @@ spec:
               memory: "1024Mi"
               cpu: "1000m"
           env:
+            - name: DB_HOST_URL
+              value: "mymongo-set"
             - name: KEYCLOAK_HOST_URL
               value: "http://keycloak-service:8080"
           livenessProbe:

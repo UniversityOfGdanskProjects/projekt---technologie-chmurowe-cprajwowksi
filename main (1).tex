@@ -1,0 +1,294 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{dsfont} 
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[top=1in, bottom=1.5in, left=1.25in, right=1.25in]{geometry}
+
+\usepackage{subfig}
+\usepackage{multirow}
+\usepackage{multicol}
+\graphicspath{{Imagens/}}
+\usepackage{xcolor,colortbl}
+\usepackage{float}
+
+\newcommand \comment[1]{\textbf{\textcolor{red}{#1}}}
+
+%\usepackage{float}
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage{lastpage} % Required to determine the last page for the footer
+\usepackage{extramarks} % Required for headers and footers
+\usepackage{indentfirst}
+\usepackage{placeins}
+\usepackage{scalefnt}
+\usepackage{xcolor,listings}
+\usepackage{textcomp}
+\usepackage{color}
+\usepackage{verbatim}
+\usepackage{framed}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{HTML}{C42043}
+\definecolor{backcolour}{HTML}{F2F2F2}
+\definecolor{bookColor}{cmyk}{0,0,0,0.90}  
+\color{bookColor}
+
+\lstset{upquote=true}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{codepurple},
+	numberstyle=\numberstyle,
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize\ttfamily,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=10pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+}
+\lstset{style=mystyle}
+
+\newcommand\numberstyle[1]{%
+	\footnotesize
+	\color{codegray}%
+	\ttfamily
+	\ifnum#1<10 0\fi#1 |%
+}
+
+\definecolor{shadecolor}{HTML}{F2F2F2}
+
+\newenvironment{sqltable}%
+{\snugshade\verbatim}%
+{\endverbatim\endsnugshade}
+
+% Margins
+\addtolength{\footskip}{0cm}
+\addtolength{\textwidth}{1.4cm}
+\addtolength{\oddsidemargin}{-.7cm}
+
+\addtolength{\textheight}{1.6cm}
+%\addtolength{\topmargin}{-2cm}
+
+% paragrafo
+\addtolength{\parskip}{.2cm}
+
+% Set up the header and footer
+\pagestyle{fancy}
+\rhead{\hmwkAuthorName} % Top left header
+\lhead{\hmwkClass: \hmwkTitle} % Top center header
+\rhead{\firstxmark} % Top right header
+\lfoot{Cezary Prajwowski} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{} % Bottom right footer
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
+
+    
+\newcommand{\hmwkTitle}{Panda Ramen Sushi} % Tytuł projektu
+\newcommand{\hmwkDueDate}{\today} % Data 
+\newcommand{\hmwkClass}{Technologie chmurowe} % Nazwa przedmiotu
+\newcommand{\hmwkAuthorName}{Cezary Prajwowski} % Imię i nazwisko
+
+% trabalho 
+\begin{document}
+% capa
+\begin{titlepage}
+    \vfill
+	\begin{center}
+	\hspace*{-1cm}
+	\vspace*{0.5cm}
+    \includegraphics[scale=0.55]{imagens/loga.png}\\
+	\textbf{Uniwersytet Gdański \\ [0.05cm]Wydział Matematyki, Fizyki i Informatyki \\ [0.05cm] Instytut Informatyki}
+
+	\vspace{0.6cm}
+	\vspace{4cm}
+	{\huge \textbf{\hmwkTitle}}\vspace{8mm}
+	
+	{\large \textbf{\hmwkAuthorName}}\\[3cm]
+	
+		\hspace{.45\textwidth} %posiciona a minipage
+	   \begin{minipage}{.5\textwidth}
+	   Projekt z przedmiotu technologie chmurowe na kierunku informatyka profil praktyczny na Uniwersytecie Gdańskim.\\[0.1cm]
+	  \end{minipage}
+	  \vfill
+	%\vspace{2cm}
+	
+	\textbf{Gdańsk}
+	
+	\textbf{\hmwkDueDate}
+	\end{center}
+	
+\end{titlepage}
+
+\newpage
+\setcounter{secnumdepth}{5}
+\tableofcontents
+\newpage
+
+\section{Opis projektu}
+\label{sec:Project}
+
+Nowopowstała, rozwijająca się restauracja z jedzeniem japońskim potrzebuje strony do składania zamówień, wyświetlania menu restauracji oraz do ogłaszania aktualności. Ma być to miejsce pomocne dla klienta jak i dla właściciela restauracji.
+
+\subsection{Opis architektury - 8 pkt}
+\label{sec:introduction}
+
+Aplikacja jest wdrożona w klastrze Kubernetes, który odbierając głównym Node'm zapytanie dotyczące stworzenia workloadu, wysyła je do Workera, który następnie za pomocą Dockera uruchamia kontener w sobie. W naszym przypadku mamy 4 takie moduły, SPA (react) dostarczający interfejs użytkowinka, API (Express) interakcja między warstwami, DB (Mongo) do zarządzania bazą danych oraz authorization server (Keycloak) do autoryzacji i autentykacji użytkownika. Każda z nich jako Deployment (zarządzajacy podami) + Service (dający dostęp do komunikacji do/z poda).
+
+\includegraphics[scale=0.45]{imagens/screen.png}\\
+\subsection{Opis infrastruktury - 6 pkt}
+\label{sec:Users}
+
+
+Aplikacja działają w kontenerach w klastrze Kubernetes. Z narzędzi używamy Kubernetes do orkiestracji kontenerów, który daje środowisko do odpalenia ich w większej ilości i Docker do tworzenia ich. Z 1Gi pamięci masowej korzysta pod bazy danych (mymongo). 
+
+
+\subsection{Opis komponentów aplikacji - 8 pkt}
+\label{sec:FunctionalConditions}
+
+\begin{itemize}
+    \item \textbf{Frontend} 
+    \begin{itemize}
+        \item Obraz zawierający aplikację React.
+        \item Wdrożony jako jedno-replikowy deployment.
+        \item Service typu LoadBalancer, dostępny na zewnątrz pod \texttt{localhost:3000}.
+        \item Nie zawiera żadnych zmiennych środowiskowych.
+    \end{itemize}
+
+    \item \textbf{Backend}
+    \begin{itemize}
+        \item Aplikacja Express na obrazie \texttt{node:alpine}.
+        \item Wdrożona jako auto-skalujący deployment.
+        \item Service typu NodePort, dostępny dla innych kontenerów pod URL \texttt{mybackend:8000}.
+        \item Zmienne środowiskowe w konfiguracji:
+        \begin{itemize}
+            \item \texttt{DB\_HOST\_URL} - nazwa serwisu bazy danych.
+            \item \texttt{KEYCLOAK\_HOST\_URL} - nazwa serwisu Keycloak.
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Database (MongoDB)}
+    \begin{itemize}
+        \item Baza danych oparta na obrazie \texttt{mongo}, z dodanym bazowym \texttt{mongoimportem}.
+        \item Wdrożona jako StatefulSet (2 repliki).
+        \item Service z nazwą domeny wewnątrz sieci Kubernetes \texttt{mymongo-set}.
+        \item Zmienne środowiskowe:
+        \begin{itemize}
+            \item \texttt{MONGO\_INITDB\_ROOT\_USERNAME} - implementowane dzięki \texttt{mongo-secret}.
+            \item \texttt{MONGO\_INITDB\_ROOT\_PASSWORD} - implementowane dzięki \texttt{mongo-secret}.
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Keycloak}
+    \begin{itemize}
+        \item Serwer autoryzujący i uwierzytelniający.
+        \item Wdrożony jako jedno-replikowy deployment.
+        \item Przekazane dane w formie secret dotyczące danych wrażliwych:
+        \begin{itemize}
+            \item Hasło Keycloak.
+            \item Hasło PostgreSQL.
+        \end{itemize}
+        \item Przekazane dane z ConfigMap:
+        \begin{itemize}
+            \item Porty.
+            \item Hosty.
+            \item Nazwy użytkownika.
+        \end{itemize}
+        \item Service typu LoadBalancer:
+        \begin{itemize}
+            \item Dostępny lokalnie na \texttt{localhost:8080}.
+            \item Dostępny dla innych kontenerów w wewnętrznej sieci na \texttt{keycloak-service:8080}.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Postgres}
+    \begin{itemize}
+        \item Baza danych PostgreSQL zamiast defaultowej H2 keycloaka, wdrożona jako Deployment i Service.
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Konfiguracja i zarządzanie - 4 pkt}
+\label{sec:NonFunctionalConditions}
+
+Klastry wdrażane są za pomocą plików .yaml, które inicjalizują Deploymenty, Serwisy, configmapy, secrety oraz metryki. Kubelet zajmuje sie zarządzaniem i utrzymywaniem poda. Konfiguracja jest wdrażana za pomocą config-mapów oraz secret`ów. Zarządzanie aplikacją głównie komendami kubectl obsługiwanymi przez kubeleta.
+
+\subsection{Zarządzanie błędami - 2 pkt}
+\label{sec:ERD} 
+Kubelet zajmuje się sprawdzaniem czy kontener jest zdrowy. 
+Pody automatycznie się restartują w razie wystąpienia awarii. Aby dodatkowo to zabezpieczyć do deploymentu backendu dodałem sondy livenessProbe oraz readinessProbe. Pierwsza sprawdza stan aplikacji i jeśli stwierdzi, że aplikacja nie działa poprawnie to ją zrestartuje. Dopóki druga sonda readinessProbe nie potwierdzi, że aplikacja jest gotowa, Kubernetes nie przesyła do niej ruchu, co zapobiega niedziałającym żądaniom.
+
+\subsection{Skalowalność - 4 pkt}
+\label{sec:ExamplesSection}
+
+Skalowanie jest wdrożone przy użyciu narzędzia HPA (HorizontalPodAutoscaler) na deploymencie backendu, który jest najbardziej narażony na problemy związane z nagłym przypływem żądań. Polega on na badaniu średniego obciążenia CPU aplikacji, gdy przekroczy 50\% startuje kolejny pod, aby rozłożyć ruch na kilka replik. Maksymalnie ustawione na 10 replik.
+
+\subsection{Wymagania dotyczące zasobów - 2 pkt}
+\label{sec:ExampleTables}
+
+Powinna zawierać informacje na temat wymagań dotyczących zasobów dla każdego komponentu aplikacji, takie jak ilość pamięci RAM, CPU, miejsce na dysku, itp. Należy również opisać, jakie są oczekiwania dotyczące wydajności i czasu odpowiedzi dla aplikacji.
+
+Dane zużycia RAM oraz CPU w tabeli pochodzą z komendy kubectl top pods. Mierzone były podczas normalnego użytkowania przez jednego użytkownika strony internetowej. 
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Serwis} & \textbf{Time (seconds)} & \textbf{CPU}& \textbf{RAM} \\
+        \hline
+        Frontend & 0.002s  & 3m & 431Mi\\ 
+        \hline
+        Backend & 0.008s & 3m & 35Mi\\
+        \hline
+        MongoDB (1x set) & 0.001s & 5m & 217Mi\\
+        \hline
+        Keycloak & 0.024s & 3m & 635Mi \\
+        \hline
+    \end{tabular}
+    \caption{Czasy odpowiedzi (testowane przez curl adres)}
+    \label{tab:component-times}
+\end{table}
+
+Mongo rezerwuje 512Mi RAM oraz 500m i ma taki sam limit ze względu na zasadę guaranteed Quality of Service and guaranteed performance.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Komponent} & \textbf{Rezerwacja} & \textbf{Limit} \\
+        \hline
+        Backend (CPU / RAM) & 100m / 124Mi & 1000m / 1024Mi \\
+        \hline
+        MongoDB (CPU / RAM) & 500m / 512Mi & 500m / 512Mi \\
+        \hline
+    \end{tabular}
+    \caption{Rezerwacja i limity zasobów dla backendu i MongoDB w Kubernetes}
+    \label{tab:resource-limits}
+\end{table}
+Dodatkowo 1Gi miejsca na dysku dla MongoDB.
+
+\subsection{Architektura sieciowa - 4 pkt}
+\label{sec:ExampleResults}
+
+
+
+Mikroserwisy komunikują się za pomoca wewnętrznej sieci. Na zewnątrz na adres localhost:3000 za pomocą LoadBalancera jest wystawiona aplikacja React, która czerpie z innych serwisów, wysyłając zapytania routowane przez sieć wewnętrzną klastra na przypisane im domeny. Wykorzystane protokoły to TCP/IP oraz HTTP.
+\noindent
+
+
+\bibliographystyle{amsplain}
+\bibliography{references.bib}
+
+https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+
+\nocite{*}
+
+\end{document}
