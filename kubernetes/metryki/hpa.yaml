@@ -1,0 +1,53 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"creationTimestamp":"2024-06-26T09:48:58Z","name":"mybackend","namespace":"keycloak","resourceVersion":"430066","uid":"b8ca33b4-a306-4859-8889-eed1b947ef22"},"spec":{"maxReplicas":10,"metrics":[{"resource":{"name":"cpu","target":{"averageUtilization":50,"type":"Utilization"}},"type":"Resource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"mybackend"}},"status":{"conditions":[{"lastTransitionTime":"2024-06-26T09:49:59Z","message":"the HPA controller was able to get the target's current scale","reason":"SucceededGetScale","status":"True","type":"AbleToScale"},{"lastTransitionTime":"2024-06-26T09:49:59Z","message":"the HPA was unable to compute the replica count: failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)","reason":"FailedGetResourceMetric","status":"False","type":"ScalingActive"}],"currentMetrics":null,"currentReplicas":1,"desiredReplicas":0}}
+  creationTimestamp: "2024-06-26T10:07:47Z"
+  name: mybackend
+  namespace: keycloak
+  resourceVersion: "431635"
+  uid: 2487e91f-61ea-4e2a-9aae-6b1320555f8b
+spec:
+  maxReplicas: 10
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 50
+        type: Utilization
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mybackend
+status:
+  conditions:
+  - lastTransitionTime: "2024-06-26T10:08:05Z"
+    message: the HPA controller was able to update the target scale to 1
+    reason: SucceededRescale
+    status: "True"
+    type: AbleToScale
+  - lastTransitionTime: "2024-06-26T10:15:06Z"
+    message: the HPA was able to successfully calculate a replica count from cpu resource
+      utilization (percentage of request)
+    reason: ValidMetricFound
+    status: "True"
+    type: ScalingActive
+  - lastTransitionTime: "2024-06-26T10:23:08Z"
+    message: the desired count is within the acceptable range
+    reason: DesiredWithinRange
+    status: "False"
+    type: ScalingLimited
+  currentMetrics:
+  - resource:
+      current:
+        averageUtilization: 2
+        averageValue: 2m
+      name: cpu
+    type: Resource
+  currentReplicas: 1
+  desiredReplicas: 1
+  lastScaleTime: "2024-06-26T10:24:09Z"

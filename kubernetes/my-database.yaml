@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mymongo
-  namespace: keycloak 
+  namespace: keycloak
 spec:
-  replicas: 1  
+  replicas: 2
   selector:
     matchLabels:
       app: mymongo
@@ -29,6 +29,34 @@ spec:
                   key: MONGO_INITDB_ROOT_PASSWORD
           ports:
             - containerPort: 27017
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: mongo-storage
+              mountPath: /data/db
+      volumes:
+        - name: mongo-storage
+          persistentVolumeClaim:
+            claimName: mongo-pvc
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+  namespace: keycloak
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 
 ---
 
@@ -43,5 +71,5 @@ spec:
   ports:
     - protocol: TCP
       port: 27017
-      targetPort: 27017  
+      targetPort: 27017
   type: ClusterIP
